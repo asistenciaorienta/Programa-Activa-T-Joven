@@ -57,3 +57,28 @@ function renderTabla(filas) {
     tbody.appendChild(tr);
   });
 }
+function cargarDesplegables(datos) {
+  const selectAyto = document.getElementById('filtroAyuntamiento');
+  const selectOcup = document.getElementById('filtroOcupacion');
+
+  // Obtener valores únicos
+  const ayuntamientos = [...new Set(datos.map(d => d.ayuntamiento).filter(Boolean))];
+  const ocupaciones = [...new Set(datos.map(d => d.ocupacion).filter(Boolean))];
+
+  // Rellenar ayuntamientos
+  ayuntamientos.forEach(ayto => {
+    const op = document.createElement('option');
+    op.value = ayto;
+    op.textContent = ayto;
+    selectAyto.appendChild(op);
+  });
+
+  // Rellenar ocupaciones
+  ocupaciones.forEach(ocu => {
+    const op = document.createElement('option');
+    op.value = ocu;
+    op.textContent = ocu;
+    selectOcup.appendChild(op);
+  });
+}
+cargarDesplegables(datos);
