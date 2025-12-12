@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Búsqueda de Registros ACTIVA-T</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Buscador de Registros ACTIVA-T Joven</h1>
+
+<div class="filter-box">
+
+  <label>Ayuntamiento:</label>
+  <input id="filtroAyuntamiento" type="text" placeholder="Ej: Láchar">
+
+  <label>Nº Ocupación:</label>
+  <input id="filtroOcupacion" type="text" placeholder="Ej: 41211029">
+
+  <label>Grupo de cotización:</label>
+  <input id="filtroGrupo" type="text">
+
+  <label>Nivel de estudios:</label>
+  <input id="filtroNivel" type="text">
+
+  <button id="btnBuscar">Buscar</button>
+</div>
+
+<table id="tablaResultados">
+  <thead>
+    <tr>
+      <th>ATE</th>
+      <th>Ayuntamiento</th>
+      <th>Código Postal</th>
+      <th>Oficina</th>
+      <th>Nº Contratos</th>
+      <th>Nº Ocupación</th>
+      <th>Denominación</th>
+      <th>Nivel Estudios</th>
+      <th>Grupo Cotización</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script src="app.js"></script>
+
+</body>
+</html>
 
