@@ -1,84 +1,85 @@
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/2PACX-1vSIDRA_WFFSC7_hQDvU99BtTzj6wd22pQbieKxyPeIaGKADD00pOviCb4N5cdpgQXu7xeB0g6mppG1Z/gviz/tq?tqx=out:json";
+// ID del Google Sheet publicado (del enlace que nos diste)
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIDRA_WFFSC7_hQDvU99BtTzj6wd22pQbieKxyPeIaGKADD00pOviCb4N5cdpgQXu7xeB0g6mppG1Z/pubhtml";
 
-let registros = [];
+// Almacenar datos
+let datos = [];
 
-// ----- Cargar datos -----
-fetch(SHEET_URL)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47, text.length - 2));
-
-    registros = json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
-
-    console.log("Datos cargados:", registros);
-  });
-
-
-// ----- Filtrado -----
-document.getElementById("btnBuscar").addEventListener("click", () => {
-  const ay = normalizar(document.getElementById("filtroAyuntamiento").value);
-  const oc = normalizar(document.getElementById("filtroOcupacion").value);
-  const gc = normalizar(document.getElementById("filtroGrupo").value);
-  const ne = normalizar(document.getElementById("filtroNivel").value);
-
-  const resultados = registros.filter(r => {
-
-    return (
-      normalizar(r[1]).includes(ay) &&
-      normalizar(r[5]).includes(oc) &&
-      normalizar(r[8]).includes(gc) &&
-      normalizar(r[7]).includes(ne)
-    );
-  });
-
-  renderTabla(resultados);
+// Cargar datos con Tabletop.js
+Tabletop.init({
+  key: SHEET_URL,
+  simpleSheet: true,
+  callback: function(data, tabletop) {
+    datos = data;
+    console.log("Datos cargados:", datos);
+    cargarDesplegables();
+  }
 });
 
-
-// ----- Quitar tildes -----
-function normalizar(t) {
-  if (!t) return "";
-  return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-
-
-// ----- Mostrar tabla -----
-function renderTabla(filas) {
-  const tbody = document.querySelector("#tablaResultados tbody");
-  tbody.innerHTML = "";
-
-  filas.forEach(r => {
-    const tr = document.createElement("tr");
-    r.forEach(col => {
-      const td = document.createElement("td");
-      td.textContent = col;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-}
-function cargarDesplegables(datos) {
+// ========================
+// CARGAR DESPLEGABLES
+// ========================
+function cargarDesplegables() {
   const selectAyto = document.getElementById('filtroAyuntamiento');
   const selectOcup = document.getElementById('filtroOcupacion');
 
-  // Obtener valores únicos
-  const ayuntamientos = [...new Set(datos.map(d => d.ayuntamiento).filter(Boolean))];
-  const ocupaciones = [...new Set(datos.map(d => d.ocupacion).filter(Boolean))];
+  const ayuntamientos = [...new Set(datos.map(d => d.Ayuntamiento).filter(Boolean))];
+  const ocupaciones = [...new Set(datos.map(d => d["Denominación Ocupación"]).filter(Boolean))];
 
-  // Rellenar ayuntamientos
-  ayuntamientos.forEach(ayto => {
-    const op = document.createElement('option');
-    op.value = ayto;
-    op.textContent = ayto;
+  ayuntamientos.forEach(ay => {
+    const op = document.createElement("option");
+    op.value = ay; op.textContent = ay;
     selectAyto.appendChild(op);
   });
 
-  // Rellenar ocupaciones
-  ocupaciones.forEach(ocu => {
-    const op = document.createElement('option');
-    op.value = ocu;
-    op.textContent = ocu;
+  ocupaciones.forEach(oc => {
+    const op = document.createElement("option");
+    op.value = oc; op.textContent = oc;
     selectOcup.appendChild(op);
   });
 }
-cargarDesplegables(datos);
+
+// ========================
+// FILTRO
+// ========================
+document.getElementById("btnBuscar").addEventListener("click", filtrar);
+
+function filtrar() {
+  const ayto = document.getElementById("filtroAyuntamiento").value;
+  const ocup = document.getElementById("filtroOcupacion").value;
+
+  let resultados = datos;
+
+  if (ayto !== "") resultados = resultados.filter(d => d.Ayuntamiento === ayto);
+  if (ocup !== "") resultados = resultados.filter(d => d["Denominación Ocupación"] === ocup);
+
+  mostrarResultados(resultados);
+}
+
+// ========================
+// MOSTRAR RESULTADOS
+// ========================
+function mostrarResultados(lista) {
+  const tbody = document.querySelector("#tablaResultados tbody");
+  tbody.innerHTML = "";
+
+  if (lista.length === 0) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 6;
+    td.textContent = "No hay resultados.";
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+    return;
+  }
+
+  lista.forEach(d => {
+    const tr = document.createElement("tr");
+    ["Ayuntamiento", "Nº Ocupación", "Denominación Ocupación", "Nº contratos", "Grupo de cotización", "Nivel de estudios"]
+      .forEach(campo => {
+        const td = document.createElement("td");
+        td.textContent = d[campo] || "";
+        tr.appendChild(td);
+      });
+    tbody.appendChild(tr);
+  });
+}
