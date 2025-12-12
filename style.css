@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+h1 {
+  text-align: center;
+  color: #007932;
+}
+
+.filter-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  background: #fff;
+  padding: 15px;
+  border: 2px solid #007932;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.filter-box label {
+  color: #007932;
+}
+
+button {
+  grid-column: span 2;
+  padding: 10px;
+  background: #007932;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005a24;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th {
+  background: #007932;
+  color: white;
+  padding: 8px;
+}
+
+td {
+  padding: 6px;
+  border-bottom: 1px solid #ccc;
+}
