@@ -1,4 +1,4 @@
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/ID_AQUI/gviz/tq?tqx=out:json";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/2PACX-1vSIDRA_WFFSC7_hQDvU99BtTzj6wd22pQbieKxyPeIaGKADD00pOviCb4N5cdpgQXu7xeB0g6mppG1Z/gviz/tq?tqx=out:json";
 
 let registros = [];
 
