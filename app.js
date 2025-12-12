@@ -1,6 +1,6 @@
 // ID del Google Sheet publicado (del enlace que nos diste)
 const SHEET_ID = "1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I}/gviz/tq?tqx=out:json`;
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
 //https://docs.google.com/spreadsheets/d/1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I/edit?usp=sharing
 // Almacenar datos
