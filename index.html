@@ -1,55 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Búsqueda de Registros ACTIVA-T</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Buscador ACTIVA-T Joven</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background:#f4f4f4; }
+  h1 { color:#007932; text-align:center; }
+  label { display:block; margin-top:10px; font-weight:bold; }
+  select, input { width: 300px; padding:6px; margin-top:5px; }
+  button { margin-top:10px; padding:8px 12px; background:#007932; color:white; border:none; cursor:pointer; border-radius:5px; }
+  button:hover { background:#005a24; }
+  table { border-collapse: collapse; width: 100%; margin-top:20px; background:white; }
+  th, td { border:1px solid #ccc; padding:6px; text-align:left; }
+  th { background:#007932; color:white; }
+</style>
 </head>
 <body>
 
-<h1>Buscador de Registros ACTIVA-T Joven</h1>
+<h1>Buscador ACTIVA-T Joven</h1>
 
-<div class="filter-box">
+<label for="filtroAyuntamiento">Ayuntamiento:</label>
+<select id="filtroAyuntamiento">
+  <option value="">-- Selecciona Ayuntamiento --</option>
+</select>
 
-  <label for="filtroAyuntamiento">Ayuntamiento:</label>
-  <select id="filtroAyuntamiento">
-    <option value="">-- Selecciona Ayuntamiento --</option>
-  </select>
-  
-  <label for="filtroOcupacion">Ocupación:</label>
-  <select id="filtroOcupacion">
-    <option value="">-- Selecciona ocupación --</option>
-  </select>
+<label for="filtroOcupacion">Ocupación:</label>
+<select id="filtroOcupacion">
+  <option value="">-- Selecciona ocupación --</option>
+</select>
 
-  <label>Nº Ocupación:</label>
-  <input id="filtroOcupacion" type="text" placeholder="Ej: 41211029">
-
-  <label>Grupo de cotización:</label>
-  <input id="filtroGrupo" type="text">
-
-  <label>Nivel de estudios:</label>
-  <input id="filtroNivel" type="text">
-
-  <button id="btnBuscar">Buscar</button>
-</div>
+<button id="btnBuscar">Buscar</button>
 
 <table id="tablaResultados">
   <thead>
     <tr>
-      <th>ATE</th>
       <th>Ayuntamiento</th>
-      <th>Código Postal</th>
-      <th>Oficina</th>
-      <th>Nº Contratos</th>
       <th>Nº Ocupación</th>
-      <th>Denominación</th>
-      <th>Nivel Estudios</th>
+      <th>Denominación Ocupación</th>
+      <th>Nº Contratos</th>
       <th>Grupo Cotización</th>
+      <th>Nivel de Estudios</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
 <script src="app.js"></script>
 
 </body>
