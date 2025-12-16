@@ -178,3 +178,55 @@ function mostrarResultados(lista) {
     tbody.appendChild(tr);
   });
 }
+/* ===============================
+   EXPORTAR A PDF
+================================*/
+document.getElementById("btnExportarPdf")?.addEventListener("click", exportarPDF);
+
+function exportarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("landscape");
+
+  // Título
+  doc.setFontSize(14);
+  doc.text("Programa ACTIVA-T Joven – Resultados de búsqueda", 14, 15);
+
+  // Obtener filas visibles
+  const filas = [];
+  document.querySelectorAll("#tablaResultados tbody tr").forEach(tr => {
+    const fila = [];
+    tr.querySelectorAll("td").forEach(td => fila.push(td.textContent));
+    if (fila.length) filas.push(fila);
+  });
+
+  if (!filas.length) {
+    alert("No hay resultados para exportar");
+    return;
+  }
+
+  doc.autoTable({
+    startY: 22,
+    head: [[
+      "Ayuntamiento",
+      "Nº Ocupación",
+      "Denominación Ocupación",
+      "Nº Contratos",
+      "Nivel Estudios",
+      "Código Postal",
+      "Oficina de Empleo"
+    ]],
+    body: filas,
+    styles: {
+      fontSize: 8,
+      cellPadding: 3
+    },
+    headStyles: {
+      fillColor: [0, 121, 50] // Verde Junta
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245]
+    }
+  });
+
+  doc.save("ACTIVA-T_Joven_resultados.pdf");
+}
