@@ -10,7 +10,7 @@ const CACHE_TIME = 5 * 60 * 1000;
 let datos = [];
 
 /* ===============================
-   NORMALIZAR VALORES
+   NORMALIZAR
 ================================*/
 function normalizar(txt = "") {
   return txt
@@ -32,7 +32,10 @@ function activarAutocomplete(input, valores) {
   input.addEventListener("input", () => {
     cont.innerHTML = "";
     const texto = normalizar(input.value);
-    if (!texto) return;
+    if (!texto) {
+      filtrar(); // búsqueda en tiempo real
+      return;
+    }
 
     valores.forEach((v, i) => {
       if (valoresNorm[i].includes(texto)) {
@@ -41,6 +44,7 @@ function activarAutocomplete(input, valores) {
         div.onclick = () => {
           input.value = v;
           cont.innerHTML = "";
+          filtrar();
         };
         cont.appendChild(div);
       }
@@ -53,7 +57,7 @@ function activarAutocomplete(input, valores) {
 }
 
 /* ===============================
-   CARGA DATOS (GVIZ + CACHE)
+   CARGA DATOS
 ================================*/
 document.addEventListener("DOMContentLoaded", cargarDatos);
 
@@ -63,6 +67,7 @@ function cargarDatos() {
   if (cache && Date.now() - cache.time < CACHE_TIME) {
     datos = cache.data;
     inicializarFiltros();
+    filtrar();
     return;
   }
 
@@ -89,8 +94,8 @@ function cargarDatos() {
       );
 
       inicializarFiltros();
-    })
-    .catch(err => console.error("Error cargando datos:", err));
+      filtrar();
+    });
 }
 
 /* ===============================
@@ -119,11 +124,14 @@ function inicializarFiltros() {
     )].sort();
 
     oficinas.forEach(o => selOfi.add(new Option(o, o)));
+    filtrar();
   });
+
+  selOfi.addEventListener("change", filtrar);
 
   selATE.dispatchEvent(new Event("change"));
 
-  /* -------- AUTOCOMPLETE -------- */
+  /* -------- AUTOCOMPLETES -------- */
   activarAutocomplete(
     document.getElementById("fAyuntamiento"),
     [...new Set(datos.map(d => d["Ayuntamiento"]).filter(Boolean))]
@@ -143,31 +151,46 @@ function inicializarFiltros() {
     document.getElementById("fNivel"),
     [...new Set(datos.map(d => d["Nivel de estudios"]).filter(Boolean))]
   );
+
+  /* -------- INPUTS → TIEMPO REAL -------- */
+  ["fAyuntamiento", "fCodigoOcupacion", "fOcupacion", "fNivel"]
+    .forEach(id => {
+      document.getElementById(id).addEventListener("input", filtrar);
+    });
 }
 
 /* ===============================
-   BUSCAR
+   FILTRAR (TIEMPO REAL)
 ================================*/
-document.getElementById("btnBuscar").addEventListener("click", () => {
+function filtrar() {
   const filtros = {
-    ate: document.getElementById("fATE").value,
-    oficina: document.getElementById("fOficina").value,
-    ayto: document.getElementById("fAyuntamiento").value,
-    cod: document.getElementById("fCodigoOcupacion").value,
-    ocup: document.getElementById("fOcupacion").value,
-    nivel: document.getElementById("fNivel").value
+    ate: fATE.value,
+    oficina: fOficina.value,
+    ayto: fAyuntamiento.value,
+    cod: fCodigoOcupacion.value,
+    ocup: fOcupacion.value,
+    nivel: fNivel.value
   };
 
   const res = datos.filter(d =>
     (!filtros.ate || d["ATE"] === filtros.ate) &&
     (!filtros.oficina || d["Oficina de empleo"] === filtros.oficina) &&
-    (!filtros.ayto || normalizar(d["Ayuntamiento"]) === normalizar(filtros.ayto)) &&
-    (!filtros.cod || d["Nº Ocupación"] === filtros.cod) &&
-    (!filtros.ocup || normalizar(d["Denominación Ocupación"]) === normalizar(filtros.ocup)) &&
+    (!filtros.ayto || normalizar(d["Ayuntamiento"]).includes(normalizar(filtros.ayto))) &&
+    (!filtros.cod || d["Nº Ocupación"].toString().includes(filtros.cod)) &&
+    (!filtros.ocup || normalizar(d["Denominación Ocupación"]).includes(normalizar(filtros.ocup))) &&
     (!filtros.nivel || d["Nivel de estudios"] === filtros.nivel)
   );
 
   mostrarResultados(res);
+}
+
+/* ===============================
+   LIMPIAR FILTROS
+================================*/
+document.getElementById("btnLimpiar").addEventListener("click", () => {
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  document.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+  filtrar();
 });
 
 /* ===============================
