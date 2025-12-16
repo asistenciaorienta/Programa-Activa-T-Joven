@@ -157,7 +157,7 @@ function mostrarResultados(lista) {
   if (!lista.length) {
     tbody.innerHTML = `<tr><td colspan="8">No hay resultados</td></tr>`;
     return;
- _toggle;
+  }
 
   lista.forEach(d => {
     const tr = document.createElement("tr");
@@ -178,7 +178,7 @@ function mostrarResultados(lista) {
     tbody.appendChild(tr);
   });
 }
-}
+
 /* ===============================
    EXPORTAR A PDF
 ================================*/
@@ -222,7 +222,7 @@ function exportarPDF() {
       cellPadding: 3
     },
     headStyles: {
-      fillColor: [0, 121, 50] // Verde Junta
+      fillColor: [0, 121, 50]
     },
     alternateRowStyles: {
       fillColor: [245, 245, 245]
