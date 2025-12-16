@@ -24,8 +24,8 @@ function cargarDesplegables() {
   const selectAyto = document.getElementById('filtroAyuntamiento');
   const selectOcup = document.getElementById('filtroOcupacion');
 
-  const ayuntamientos = [...new Set(datos.map(d => d.Ayuntamiento).filter(Boolean))];
-  const ocupaciones = [...new Set(datos.map(d => d["Denominación Ocupación"]).filter(Boolean))];
+  const ayuntamientos = [...new Set(datos.map(d => d.Ayuntamientos_Granada).filter(Boolean))];
+  const ocupaciones = [...new Set(datos.map(d => d.Ocupaciones_8dígitos_CNO2011).filter(Boolean))];
 
   ayuntamientos.forEach(ay => {
     const op = document.createElement("option");
@@ -51,8 +51,8 @@ function filtrar() {
 
   let resultados = datos;
 
-  if (ayto !== "") resultados = resultados.filter(d => d.Ayuntamiento === ayto);
-  if (ocup !== "") resultados = resultados.filter(d => d["Denominación Ocupación"] === ocup);
+  if (ayto !== "") resultados = resultados.filter(d => d.Ayuntamientos_Granada === ayto);
+  if (ocup !== "") resultados = resultados.filter(d => d.Ocupaciones_8dígitos_CNO2011 === ocup);
 
   mostrarResultados(resultados);
 }
