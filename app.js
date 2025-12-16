@@ -9,9 +9,38 @@ let datos = [];
 function normalizar(txt){
   return txt
     .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
     .trim();
 }
+
+function activarAutocomplete(input, valores){
+  const cont = input.nextElementSibling;
+  const valoresNorm = valores.map(v => normalizar(v));
+
+  input.addEventListener("input", () => {
+    cont.innerHTML = "";
+    const texto = normalizar(input.value);
+    if (!texto) return;
+
+    valores.forEach((v, i) => {
+      if (valoresNorm[i].includes(texto)) {
+        const div = document.createElement("div");
+        div.textContent = v;
+        div.onclick = () => {
+          input.value = v;
+          cont.innerHTML = "";
+        };
+        cont.appendChild(div);
+      }
+    });
+  });
+
+  document.addEventListener("click", e => {
+    if (e.target !== input) cont.innerHTML = "";
+  });
+}
+
 
 /* ===============================
    CARGA DE DATOS
@@ -51,19 +80,61 @@ function cargarDesplegables(){
   ocups.forEach(o => selOc.add(new Option(o, o)));
 }
 
+activarAutocomplete(
+  document.getElementById("fATE"),
+  [...new Set(datos.map(d => d["ate"]).filter(Boolean))]
+);
+
+activarAutocomplete(
+  document.getElementById("fAyuntamiento"),
+  [...new Set(datos.map(d => d["ayuntamiento"]).filter(Boolean))]
+);
+
+activarAutocomplete(
+  document.getElementById("fOficina"),
+  [...new Set(datos.map(d => d["oficina de empleo"]).filter(Boolean))]
+);
+
+activarAutocomplete(
+  document.getElementById("fCodigoOcupacion"),
+  [...new Set(datos.map(d => d["nº ocupacion"]).filter(Boolean))]
+);
+
+activarAutocomplete(
+  document.getElementById("fOcupacion"),
+  [...new Set(datos.map(d => d["denominacion ocupacion"]).filter(Boolean))]
+);
+
+activarAutocomplete(
+  document.getElementById("fNivel"),
+  [...new Set(datos.map(d => d["nivel de estudios"]).filter(Boolean))]
+);
+
 /* ===============================
    FILTRAR
 ================================*/
 document.getElementById("btnBuscar").addEventListener("click", () => {
-  const ay = document.getElementById("filtroAyuntamiento").value;
-  const oc = document.getElementById("filtroOcupacion").value;
+  const filtros = {
+    ate: document.getElementById("fATE").value,
+    ayuntamiento: document.getElementById("fAyuntamiento").value,
+    oficina: document.getElementById("fOficina").value,
+    codOcup: document.getElementById("fCodigoOcupacion").value,
+    ocup: document.getElementById("fOcupacion").value,
+    nivel: document.getElementById("fNivel").value
+  };
 
-  let res = datos;
-  if (ay) res = res.filter(d => d["ayuntamiento"] === ay);
-  if (oc) res = res.filter(d => d["denominacion ocupacion"] === oc);
+  let res = datos.filter(d =>
+    (!filtros.ate || d["ate"] === filtros.ate) &&
+    (!filtros.ayuntamiento || d["ayuntamiento"] === filtros.ayuntamiento) &&
+    (!filtros.oficina || d["oficina de empleo"] === filtros.oficina) &&
+    (!filtros.codOcup || d["nº ocupacion"] === filtros.codOcup) &&
+    (!filtros.ocup || d["denominacion ocupacion"] === filtros.ocup) &&
+    (!filtros.nivel || d["nivel de estudios"] === filtros.nivel)
+  );
 
   mostrarResultados(res);
 });
+
 
 /* ===============================
    MOSTRAR RESULTADOS
