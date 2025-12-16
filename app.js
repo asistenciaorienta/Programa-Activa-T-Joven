@@ -178,6 +178,7 @@ function mostrarResultados(lista) {
     tbody.appendChild(tr);
   });
 }
+}
 /* ===============================
    EXPORTAR A PDF
 ================================*/
