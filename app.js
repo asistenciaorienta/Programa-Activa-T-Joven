@@ -1,87 +1,98 @@
-// ID del Google Sheet publicado (del enlace que nos diste)
 const SHEET_ID = "1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Datos_Activa-T_Joven25-26`;
 
-//https://docs.google.com/spreadsheets/d/1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I/edit?usp=sharing
-// Almacenar datos
 let datos = [];
 
-// Cargar datos con Tabletop.js
-Tabletop.init({
-  key: SHEET_URL,
-  simpleSheet: true,
-  callback: function(data, tabletop) {
-    datos = data;
-    console.log("Datos cargados:", datos);
+/* ===============================
+   NORMALIZAR
+================================*/
+function normalizar(txt){
+  return txt
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .trim();
+}
+
+/* ===============================
+   CARGA DE DATOS
+================================*/
+fetch(URL)
+  .then(r => r.text())
+  .then(txt => {
+    const json = JSON.parse(
+      txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1)
+    );
+
+    const cols = json.table.cols.map(c => normalizar(c.label));
+
+    datos = json.table.rows.map(r => {
+      let obj = {};
+      cols.forEach((c, i) => {
+        obj[c] = r.c[i] ? r.c[i].v : "";
+      });
+      return obj;
+    });
+
+    console.log("Datos cargados:", datos.length);
     cargarDesplegables();
-  }
+  });
+
+/* ===============================
+   DESPLEGABLES
+================================*/
+function cargarDesplegables(){
+  const selAy = document.getElementById("filtroAyuntamiento");
+  const selOc = document.getElementById("filtroOcupacion");
+
+  const aytos = [...new Set(datos.map(d => d["ayuntamiento"]).filter(Boolean))].sort();
+  const ocups = [...new Set(datos.map(d => d["denominacion ocupacion"]).filter(Boolean))].sort();
+
+  aytos.forEach(a => selAy.add(new Option(a, a)));
+  ocups.forEach(o => selOc.add(new Option(o, o)));
+}
+
+/* ===============================
+   FILTRAR
+================================*/
+document.getElementById("btnBuscar").addEventListener("click", () => {
+  const ay = document.getElementById("filtroAyuntamiento").value;
+  const oc = document.getElementById("filtroOcupacion").value;
+
+  let res = datos;
+  if (ay) res = res.filter(d => d["ayuntamiento"] === ay);
+  if (oc) res = res.filter(d => d["denominacion ocupacion"] === oc);
+
+  mostrarResultados(res);
 });
 
-// ========================
-// CARGAR DESPLEGABLES
-// ========================
-function cargarDesplegables() {
-  const selectAyto = document.getElementById('filtroAyuntamiento');
-  const selectOcup = document.getElementById('filtroOcupacion');
-
-  const ayuntamientos = [...new Set(datos.map(d => d.Ayuntamientos_Granada).filter(Boolean))];
-  const ocupaciones = [...new Set(datos.map(d => d.Ocupaciones_8dígitos_CNO2011).filter(Boolean))];
-
-  ayuntamientos.forEach(ay => {
-    const op = document.createElement("option");
-    op.value = ay; op.textContent = ay;
-    selectAyto.appendChild(op);
-  });
-
-  ocupaciones.forEach(oc => {
-    const op = document.createElement("option");
-    op.value = oc; op.textContent = oc;
-    selectOcup.appendChild(op);
-  });
-}
-
-// ========================
-// FILTRO
-// ========================
-document.getElementById("btnBuscar").addEventListener("click", filtrar);
-
-function filtrar() {
-  const ayto = document.getElementById("filtroAyuntamiento").value;
-  const ocup = document.getElementById("filtroOcupacion").value;
-
-  let resultados = datos;
-
-  if (ayto !== "") resultados = resultados.filter(d => d.Ayuntamientos_Granada === ayto);
-  if (ocup !== "") resultados = resultados.filter(d => d.Ocupaciones_8dígitos_CNO2011 === ocup);
-
-  mostrarResultados(resultados);
-}
-
-// ========================
-// MOSTRAR RESULTADOS
-// ========================
-function mostrarResultados(lista) {
+/* ===============================
+   MOSTRAR RESULTADOS
+================================*/
+function mostrarResultados(lista){
   const tbody = document.querySelector("#tablaResultados tbody");
   tbody.innerHTML = "";
 
-  if (lista.length === 0) {
-    const tr = document.createElement("tr");
-    const td = document.createElement("td");
-    td.colSpan = 6;
-    td.textContent = "No hay resultados.";
-    tr.appendChild(td);
-    tbody.appendChild(tr);
+  if (!lista.length){
+    tbody.innerHTML = `<tr><td colspan="8">No hay resultados</td></tr>`;
     return;
   }
 
   lista.forEach(d => {
     const tr = document.createElement("tr");
-    ["Ayuntamiento", "Nº Ocupación", "Denominación Ocupación", "Nº contratos", "Grupo de cotización", "Nivel de estudios"]
-      .forEach(campo => {
-        const td = document.createElement("td");
-        td.textContent = d[campo] || "";
-        tr.appendChild(td);
-      });
+    [
+      "ayuntamiento",
+      "nº ocupacion",
+      "denominacion ocupacion",
+      "nº contratos",
+      "grupo de cotizacion",
+      "nivel de estudios",
+      "codigo postal",
+      "oficina de empleo"
+    ].forEach(c => {
+      const td = document.createElement("td");
+      td.textContent = d[c] || "";
+      tr.appendChild(td);
+    });
     tbody.appendChild(tr);
   });
 }
