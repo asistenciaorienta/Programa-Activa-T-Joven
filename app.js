@@ -10,7 +10,7 @@ const CACHE_TIME = 5 * 60 * 1000;
 let datos = [];
 
 /* ===============================
-   NORMALIZAR
+   NORMALIZAR VALORES
 ================================*/
 function normalizar(txt = "") {
   return txt
@@ -25,8 +25,7 @@ function normalizar(txt = "") {
    AUTOCOMPLETE
 ================================*/
 function activarAutocomplete(input, valores) {
-  if (!input || !valores.length) return;
-
+  if (!input) return;
   const cont = input.nextElementSibling;
   const valoresNorm = valores.map(v => normalizar(v));
 
@@ -38,7 +37,6 @@ function activarAutocomplete(input, valores) {
     valores.forEach((v, i) => {
       if (valoresNorm[i].includes(texto)) {
         const div = document.createElement("div");
-        div.className = "autocomplete-item";
         div.textContent = v;
         div.onclick = () => {
           input.value = v;
@@ -55,7 +53,7 @@ function activarAutocomplete(input, valores) {
 }
 
 /* ===============================
-   CARGA DATOS
+   CARGA DATOS (GVIZ + CACHE)
 ================================*/
 document.addEventListener("DOMContentLoaded", cargarDatos);
 
@@ -75,12 +73,12 @@ function cargarDatos() {
         txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1)
       );
 
-      const cols = json.table.cols.map(c => normalizar(c.label));
+      const headers = json.table.cols.map(c => c.label);
 
       datos = json.table.rows.map(r => {
         let obj = {};
-        cols.forEach((c, i) => {
-          obj[c] = r.c[i] ? r.c[i].v : "";
+        headers.forEach((h, i) => {
+          obj[h] = r.c[i] ? r.c[i].v : "";
         });
         return obj;
       });
@@ -100,18 +98,12 @@ function cargarDatos() {
 ================================*/
 function inicializarFiltros() {
 
-  /* -------- ATE (SELECT) -------- */
   const selATE = document.getElementById("fATE");
   const selOfi = document.getElementById("fOficina");
 
-  if (!selATE || !selOfi) {
-    console.error("No existe fATE o fOficina en el HTML");
-    return;
-  }
-
-  const ates = [...new Set(datos.map(d => d["ate"]).filter(Boolean))].sort();
-
-  selATE.innerHTML = `<option value="">Todas las ATE</option>`;
+  /* -------- ATE -------- */
+  const ates = [...new Set(datos.map(d => d["ATE"]).filter(Boolean))].sort();
+  selATE.innerHTML = `<option value="">Todas las ATEs</option>`;
   ates.forEach(a => selATE.add(new Option(a, a)));
 
   /* -------- OFICINAS DEPENDIENTES -------- */
@@ -121,8 +113,8 @@ function inicializarFiltros() {
 
     const oficinas = [...new Set(
       datos
-        .filter(d => !ateSel || d["ate"] === ateSel)
-        .map(d => d["oficina de empleo"])
+        .filter(d => !ateSel || d["ATE"] === ateSel)
+        .map(d => d["Oficina de empleo"])
         .filter(Boolean)
     )].sort();
 
@@ -131,25 +123,25 @@ function inicializarFiltros() {
 
   selATE.dispatchEvent(new Event("change"));
 
-  /* -------- AUTOCOMPLETES -------- */
+  /* -------- AUTOCOMPLETE -------- */
   activarAutocomplete(
     document.getElementById("fAyuntamiento"),
-    [...new Set(datos.map(d => d["ayuntamiento"]).filter(Boolean))]
+    [...new Set(datos.map(d => d["Ayuntamiento"]).filter(Boolean))]
   );
 
   activarAutocomplete(
     document.getElementById("fCodigoOcupacion"),
-    [...new Set(datos.map(d => d["nº ocupacion"]).filter(Boolean))]
+    [...new Set(datos.map(d => d["Nº Ocupación"]).filter(Boolean))]
   );
 
   activarAutocomplete(
     document.getElementById("fOcupacion"),
-    [...new Set(datos.map(d => d["denominacion ocupacion"]).filter(Boolean))]
+    [...new Set(datos.map(d => d["Denominación Ocupación"]).filter(Boolean))]
   );
 
   activarAutocomplete(
     document.getElementById("fNivel"),
-    [...new Set(datos.map(d => d["nivel de estudios"]).filter(Boolean))]
+    [...new Set(datos.map(d => d["Nivel de estudios"]).filter(Boolean))]
   );
 }
 
@@ -167,12 +159,12 @@ document.getElementById("btnBuscar").addEventListener("click", () => {
   };
 
   const res = datos.filter(d =>
-    (!filtros.ate || d["ate"] === filtros.ate) &&
-    (!filtros.oficina || d["oficina de empleo"] === filtros.oficina) &&
-    (!filtros.ayto || normalizar(d["ayuntamiento"]) === normalizar(filtros.ayto)) &&
-    (!filtros.cod || d["nº ocupacion"] === filtros.cod) &&
-    (!filtros.ocup || normalizar(d["denominacion ocupacion"]) === normalizar(filtros.ocup)) &&
-    (!filtros.nivel || d["nivel de estudios"] === filtros.nivel)
+    (!filtros.ate || d["ATE"] === filtros.ate) &&
+    (!filtros.oficina || d["Oficina de empleo"] === filtros.oficina) &&
+    (!filtros.ayto || normalizar(d["Ayuntamiento"]) === normalizar(filtros.ayto)) &&
+    (!filtros.cod || d["Nº Ocupación"] === filtros.cod) &&
+    (!filtros.ocup || normalizar(d["Denominación Ocupación"]) === normalizar(filtros.ocup)) &&
+    (!filtros.nivel || d["Nivel de estudios"] === filtros.nivel)
   );
 
   mostrarResultados(res);
@@ -193,14 +185,14 @@ function mostrarResultados(lista) {
   lista.forEach(d => {
     const tr = document.createElement("tr");
     [
-      "ate",
-      "ayuntamiento",
-      "nº ocupacion",
-      "denominacion ocupacion",
-      "nº contratos",
-      "nivel de estudios",
-      "codigo postal",
-      "oficina de empleo"
+      "Ayuntamiento",
+      "Nº Ocupación",
+      "Denominación Ocupación",
+      "Nº contratos",
+      "Grupo de cotización",
+      "Nivel de estudios",
+      "Código Postal",
+      "Oficina de empleo"
     ].forEach(c => {
       const td = document.createElement("td");
       td.textContent = d[c] || "";
