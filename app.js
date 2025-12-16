@@ -212,9 +212,9 @@ function exportarPDF() {
       "Nº Ocupación",
       "Denominación Ocupación",
       "Nº Contratos",
+      "Grupo de Cotización",
       "Nivel Estudios",
-      "Código Postal",
-      "Oficina de Empleo"
+      "Código Postal"
     ]],
     body: filas,
     styles: {
