@@ -13,21 +13,69 @@
   table { border-collapse: collapse; width: 100%; margin-top:20px; background:white; }
   th, td { border:1px solid #ccc; padding:6px; text-align:left; }
   th { background:#007932; color:white; }
+.filtro { position: relative; margin-bottom: 10px; }
+
+.autocomplete {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.autocomplete div {
+  padding: 6px;
+  cursor: pointer;
+}
+
+.autocomplete div:hover {
+  background: #007932;
+  color: white;
+}
+  
 </style>
 </head>
 <body>
 
-<h1>Buscador ACTIVA-T Joven</h1>
+<h1>Buscador ACTIVA-T Joven (2025-26)</h1>
 
-<label for="filtroAyuntamiento">Ayuntamiento:</label>
-<select id="filtroAyuntamiento">
-  <option value="">-- Selecciona Ayuntamiento --</option>
-</select>
+<div class="filtro">
+  <label>ATE</label>
+  <input type="text" id="fATE" autocomplete="off">
+  <div class="autocomplete"></div>
+</div>
 
-<label for="filtroOcupacion">Denominación de la Ocupación:</label>
-<select id="filtroOcupacion">
-  <option value="">-- Selecciona ocupación --</option>
-</select>
+<div class="filtro">
+  <label>Ayuntamiento</label>
+  <input type="text" id="fAyuntamiento" autocomplete="off">
+  <div class="autocomplete"></div>
+</div>
+
+<div class="filtro">
+  <label>Oficina de empleo</label>
+  <input type="text" id="fOficina" autocomplete="off">
+  <div class="autocomplete"></div>
+</div>
+
+<div class="filtro">
+  <label>Código ocupación</label>
+  <input type="text" id="fCodigoOcupacion" autocomplete="off">
+  <div class="autocomplete"></div>
+</div>
+
+<div class="filtro">
+  <label>Denominación ocupación</label>
+  <input type="text" id="fOcupacion" autocomplete="off">
+  <div class="autocomplete"></div>
+</div>
+
+<div class="filtro">
+  <label>Nivel de estudios</label>
+  <input type="text" id="fNivel" autocomplete="off">
+  <div class="autocomplete"></div>
+</div>
 
 <button id="btnBuscar">Buscar</button>
 
