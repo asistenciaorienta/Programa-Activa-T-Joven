@@ -5,12 +5,12 @@ const SHEET_ID = "1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I";
 const SHEET_NAME = "Datos_Activa-T_Joven25-26";
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 const CACHE_KEY = "activa_t_joven_datos";
-const CACHE_TIME = 5 * 60 * 1000; // 5 minutos
+const CACHE_TIME = 5 * 60 * 1000;
 
 let datos = [];
 
 /* ===============================
-   NORMALIZAR TEXTO
+   NORMALIZAR
 ================================*/
 function normalizar(txt = "") {
   return txt
@@ -25,6 +25,8 @@ function normalizar(txt = "") {
    AUTOCOMPLETE
 ================================*/
 function activarAutocomplete(input, valores) {
+  if (!input || !valores.length) return;
+
   const cont = input.nextElementSibling;
   const valoresNorm = valores.map(v => normalizar(v));
 
@@ -53,7 +55,7 @@ function activarAutocomplete(input, valores) {
 }
 
 /* ===============================
-   CARGA DATOS (CACHE + FETCH)
+   CARGA DATOS
 ================================*/
 document.addEventListener("DOMContentLoaded", cargarDatos);
 
@@ -62,7 +64,6 @@ function cargarDatos() {
 
   if (cache && Date.now() - cache.time < CACHE_TIME) {
     datos = cache.data;
-    console.log("Datos cargados desde caché:", datos.length);
     inicializarFiltros();
     return;
   }
@@ -89,27 +90,31 @@ function cargarDatos() {
         JSON.stringify({ time: Date.now(), data: datos })
       );
 
-      console.log("Datos cargados desde Google Sheets:", datos.length);
       inicializarFiltros();
     })
     .catch(err => console.error("Error cargando datos:", err));
 }
 
 /* ===============================
-   INICIALIZAR FILTROS
+   FILTROS
 ================================*/
 function inicializarFiltros() {
 
-  /* ---------- ATE (select clásico) ---------- */
+  /* -------- ATE (SELECT) -------- */
   const selATE = document.getElementById("fATE");
+  const selOfi = document.getElementById("fOficina");
+
+  if (!selATE || !selOfi) {
+    console.error("No existe fATE o fOficina en el HTML");
+    return;
+  }
+
   const ates = [...new Set(datos.map(d => d["ate"]).filter(Boolean))].sort();
 
   selATE.innerHTML = `<option value="">Todas las ATE</option>`;
   ates.forEach(a => selATE.add(new Option(a, a)));
 
-  /* ---------- Oficina (select clásico dependiente) ---------- */
-  const selOfi = document.getElementById("fOficina");
-
+  /* -------- OFICINAS DEPENDIENTES -------- */
   selATE.addEventListener("change", () => {
     const ateSel = selATE.value;
     selOfi.innerHTML = `<option value="">Todas las oficinas</option>`;
@@ -126,7 +131,7 @@ function inicializarFiltros() {
 
   selATE.dispatchEvent(new Event("change"));
 
-  /* ---------- AUTOCOMPLETE ---------- */
+  /* -------- AUTOCOMPLETES -------- */
   activarAutocomplete(
     document.getElementById("fAyuntamiento"),
     [...new Set(datos.map(d => d["ayuntamiento"]).filter(Boolean))]
@@ -149,7 +154,7 @@ function inicializarFiltros() {
 }
 
 /* ===============================
-   FILTRAR
+   BUSCAR
 ================================*/
 document.getElementById("btnBuscar").addEventListener("click", () => {
   const filtros = {
@@ -174,7 +179,7 @@ document.getElementById("btnBuscar").addEventListener("click", () => {
 });
 
 /* ===============================
-   MOSTRAR RESULTADOS
+   RESULTADOS
 ================================*/
 function mostrarResultados(lista) {
   const tbody = document.querySelector("#tablaResultados tbody");
