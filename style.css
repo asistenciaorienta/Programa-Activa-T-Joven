@@ -127,7 +127,7 @@ select, input {padding:6px; margin-top:5px; }
 /* Inputs y selects */
 .campo-filtro input,
 .campo-filtro select {
-  width: 100%;
+ /* width: 100%;*/
   min-width: 0;
   padding: 8px 34px 8px 10px;
   border-radius: 6px;
@@ -178,11 +178,11 @@ select, input {padding:6px; margin-top:5px; }
    TAMAÑOS DE FILTROS (SAE)
 ================================*/
 .campo-filtro.ate {max-width: 250px;}
-.campo-filtro.codigo {max-width: 150px;}
-.campo-filtro.oficina {max-width: 350px;}
-.campo-filtro.ayuntamiento {max-width: 350px;}
-.campo-filtro.ocupacion {max-width: 150px;}
-.campo-filtro.nivel {max-width: 150px;}
+.campo-filtro.oficina {max-width: 450px;}
+.campo-filtro.ayuntamiento {max-width: 450px;}
+.campo-filtro.codigo {max-width: 170px;}
+.campo-filtro.ocupacion {max-width: 170px;}
+.campo-filtro.nivel {max-width: 170px;}
 
 .filter-box::before {
   content: "Filtros de búsqueda";
