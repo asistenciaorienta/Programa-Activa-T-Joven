@@ -227,7 +227,7 @@ function mostrarResultados(lista) {
   tbody.innerHTML = "";
 
   if (!lista.length) {
-    tbody.innerHTML = `<tr><td colspan="8">No hay resultados</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7">No hay resultados</td></tr>`;
     return;
   }
 
