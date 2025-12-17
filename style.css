@@ -1,7 +1,10 @@
 body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
+  font-family: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;  /* Ajusta tamaño base */
+  line-height: 1.5;
+  color: #333;
   background: #f4f4f4;
+  padding: 20px;
 }
 
 h1 {
@@ -51,16 +54,19 @@ table {
   border-collapse: collapse;
   background: white;
   margin-top:20px;
+  font-size: 12px; /* Tamaño de letra más pequeño */
 }
 th, td { border:1px solid #ccc; text-align:left; }
 th {
   background: #007932;
   color: white;
-  padding: 8px;
+  padding: 8px;  
+  font-size: 12px; /* Tamaño de letra más pequeño */
 }
 td {
   padding: 6px;
   border-bottom: 1px solid #ccc;
+  font-size: 12px; /* Tamaño de letra más pequeño */
 }
 
 label { display:block; margin-top:10px; font-weight:bold; }
