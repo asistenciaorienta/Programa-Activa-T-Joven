@@ -173,3 +173,16 @@ select, input { width: 300px; padding:6px; margin-top:5px; }
 .clear-btn:hover {
   color: #c00000;
 }
+#btnLimpiar {
+  background: #9e9e9e;
+}
+#btnLimpiar:hover {
+  background: #7d7d7d;
+}
+
+#btnExportarPdf {
+  background: #005a24;
+}
+#btnExportarPdf:hover {
+  background: #003d18;
+}
