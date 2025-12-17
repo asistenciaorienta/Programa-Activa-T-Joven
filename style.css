@@ -68,7 +68,11 @@ select, input {padding:6px; margin-top:5px; }
 
 .campo-filtro {
   position: relative;
+  width: 100%;
+  min-height: 48px;
+  align-self: start;
 }
+
 .campo-filtro select,
 .campo-filtro input {
   width: 300px;
@@ -97,12 +101,14 @@ select, input {padding:6px; margin-top:5px; }
 
 .autocomplete {
   position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   background: white;
   border: 1px solid #ccc;
-  width: 100%;
   max-height: 180px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 2000;
 }
 .autocomplete div {
   padding: 6px;
@@ -125,6 +131,7 @@ select, input {padding:6px; margin-top:5px; }
   border: 2px solid #007932;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  grid-auto-rows: minmax(70px, auto);
   margin-bottom: 25px;
 }
 
@@ -179,30 +186,9 @@ select, input {padding:6px; margin-top:5px; }
 /* ===============================
    TAMAÑOS DE FILTROS (SAE)
 ================================*/
-
-/* Por defecto */
-.campo-filtro {
-  width: 100%;
-}
-
-/* ATE – más corto */
-.campo-filtro.ate {
-  max-width: 180px;
-}
-
-/* Código ocupación – pequeño */
-.campo-filtro.codigo {
-  max-width: 160px;
-}
-
-/* Oficina y Ayuntamiento – medianos */
+.campo-filtro.ate { max-width: 180px; }
+.campo-filtro.codigo { max-width: 160px; }
 .campo-filtro.oficina,
-.campo-filtro.ayuntamiento {
-  max-width: 260px;
-}
-
-/* Texto largo */
+.campo-filtro.ayuntamiento { max-width: 260px; }
 .campo-filtro.ocupacion,
-.campo-filtro.nivel {
-  max-width: 320px;
-}
+.campo-filtro.nivel { max-width: 100%; }
