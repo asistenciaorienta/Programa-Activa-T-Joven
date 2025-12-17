@@ -19,7 +19,6 @@ h1 {
   border-radius: 8px;
   margin-bottom: 20px;
 }
-
 .filter-box label {
   color: #007932;
 }
@@ -32,8 +31,10 @@ button {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  margin-top:10px;
+  padding:8px 12px;
+  color:white;
 }
-
 button:hover {
   background: #005a24;
 }
@@ -42,27 +43,36 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: white;
+  margin-top:20px;
 }
-
+th, td { border:1px solid #ccc; text-align:left; }
 th {
   background: #007932;
   color: white;
   padding: 8px;
 }
-
 td {
   padding: 6px;
   border-bottom: 1px solid #ccc;
 }
+
+label { display:block; margin-top:10px; font-weight:bold; }
+
+select, input { width: 300px; padding:6px; margin-top:5px; } 
+ 
+.filtro { position: relative; margin-bottom: 10px; }
+
 .campo-filtro {
   position: relative;
   display: inline-block;
 }
-
 .campo-filtro select,
 .campo-filtro input {
   width: 300px;
   padding-right: 28px;
+}
+.campo-filtro.activo .clear-btn {
+  display: block;
 }
 
 .clear-btn {
@@ -75,11 +85,24 @@ td {
   font-weight: bold;
   display: none;
 }
-
 .clear-btn:hover {
   color: #c00000;
 }
 
-.campo-filtro.activo .clear-btn {
-  display: block;
+.autocomplete {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.autocomplete div {
+  padding: 6px;
+  cursor: pointer;
+}
+.autocomplete div:hover {
+  background: #007932;
+  color: white;
 }
