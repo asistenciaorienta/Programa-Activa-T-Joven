@@ -275,3 +275,21 @@ document.querySelectorAll(".campo-filtro").forEach(campo => {
 
   toggleClear();
 });
+/* ===============================
+   RESALTAR FILTROS ACTIVOS
+================================*/
+function actualizarEstadoFiltros() {
+  document.querySelectorAll(".campo-filtro").forEach(campo => {
+    const input = campo.querySelector("input, select");
+    if (!input) return;
+    campo.classList.toggle("activo", !!input.value);
+  });
+}
+
+/* Ejecutar en cada cambio */
+["input", "change"].forEach(evt => {
+  document.addEventListener(evt, actualizarEstadoFiltros);
+});
+
+/* Ejecutar al cargar */
+document.addEventListener("DOMContentLoaded", actualizarEstadoFiltros);
