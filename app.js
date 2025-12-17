@@ -240,7 +240,6 @@ function mostrarResultados(lista) {
       "Nº contratos",
       "Grupo de cotización",
       "Nivel de estudios",
-      "Código Postal",
       "Oficina de empleo"
     ].forEach(c => {
       const td = document.createElement("td");
