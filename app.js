@@ -153,8 +153,17 @@ function actualizarFiltros() {
         (!filtros.nivel || normalizar(d["Nivel de estudios"]).includes(normalizar(filtros.nivel)))
       )
     : datos;
-
-  actualizarSelect(
+   
+   // ===============================
+     // ORDENAR POR AYUNTAMIENTO
+     // ===============================
+     filtrados.sort((a, b) => {
+       const aytoA = a["Ayuntamiento"] ? a["Ayuntamiento"].toLowerCase() : "";
+       const aytoB = b["Ayuntamiento"] ? b["Ayuntamiento"].toLowerCase() : "";
+       return aytoA.localeCompare(aytoB);
+     });
+  
+   actualizarSelect(
     selATE,
     filtrados.map(d => d["ATE"]),
     filtros.ate,
