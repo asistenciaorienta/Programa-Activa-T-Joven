@@ -4,13 +4,14 @@
 const SHEET_ID = "1JomDFGbxD_uQ7aKZb42N8qNESDWfmxEO01wizw58v1I";
 const SHEET_NAME = "Datos_Activa-T_Joven25-26";
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
-const CACHE_KEY = "activa_t_joven_datos";
-const CACHE_TIME = 5 * 60 * 1000;
+
+const CACHE_KEY = "activa_t_joven_cache";
+const CACHE_TIME = 5 * 60 * 1000; // 5 minutos
 
 let datos = [];
 
 /* ===============================
-   NORMALIZAR
+   NORMALIZAR TEXTO
 ================================*/
 function normalizar(txt = "") {
   return txt.toString()
@@ -25,6 +26,7 @@ function normalizar(txt = "") {
 ================================*/
 function activarAutocomplete(input, valores) {
   if (!input) return;
+
   const cont = input.nextElementSibling;
   cont.innerHTML = "";
 
@@ -32,11 +34,14 @@ function activarAutocomplete(input, valores) {
 
   input.oninput = () => {
     cont.innerHTML = "";
-    const txt = normalizar(input.value);
-    if (!txt) return;
+    const texto = normalizar(input.value);
+    if (!texto) {
+      actualizarFiltros();
+      return;
+    }
 
     valores.forEach((v, i) => {
-      if (valoresNorm[i].includes(txt)) {
+      if (valoresNorm[i].includes(texto)) {
         const div = document.createElement("div");
         div.textContent = v;
         div.onclick = () => {
@@ -62,6 +67,7 @@ function activarAutocomplete(input, valores) {
 document.addEventListener("DOMContentLoaded", cargarDatos);
 
 function cargarDatos() {
+
   const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
 
   if (cache && Date.now() - cache.time < CACHE_TIME) {
@@ -73,7 +79,10 @@ function cargarDatos() {
   fetch(URL)
     .then(r => r.text())
     .then(txt => {
-      const json = JSON.parse(txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1));
+      const json = JSON.parse(
+        txt.substring(txt.indexOf("{"), txt.lastIndexOf("}") + 1)
+      );
+
       const cols = json.table.cols.map(c => c.label);
 
       datos = json.table.rows.map(r => {
@@ -82,18 +91,27 @@ function cargarDatos() {
         return o;
       });
 
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), data: datos }));
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ time: Date.now(), data: datos })
+      );
+
       inicializar();
-    });
+    })
+    .catch(err => console.error("Error cargando datos:", err));
 }
 
 /* ===============================
-   INICIALIZAR FILTROS
+   VARIABLES FILTROS
 ================================*/
 let selATE, selOfi, selAyto;
 let inpCod, inpOcup, inpNivel;
 
+/* ===============================
+   INICIALIZAR
+================================*/
 function inicializar() {
+
   selATE = document.getElementById("fATE");
   selOfi = document.getElementById("fOficina");
   selAyto = document.getElementById("fAyuntamiento");
@@ -102,7 +120,10 @@ function inicializar() {
   inpOcup = document.getElementById("fOcupacion");
   inpNivel = document.getElementById("fNivel");
 
-  [selATE, selOfi, selAyto].forEach(s => s.onchange = actualizarFiltros);
+  selATE.onchange = actualizarFiltros;
+  selOfi.onchange = actualizarFiltros;
+  selAyto.onchange = actualizarFiltros;
+
   actualizarFiltros();
 }
 
@@ -120,37 +141,88 @@ function actualizarFiltros() {
     nivel: inpNivel.value
   };
 
-  const filtrados = datos.filter(d =>
-    (!filtros.ate || d["ATE"] === filtros.ate) &&
-    (!filtros.oficina || d["Oficina de empleo"] === filtros.oficina) &&
-    (!filtros.ayto || d["Ayuntamiento"] === filtros.ayto) &&
-    (!filtros.cod || d["Nº Ocupación"].toString().includes(filtros.cod)) &&
-    (!filtros.ocup || normalizar(d["Denominación Ocupación"]).includes(normalizar(filtros.ocup))) &&
-    (!filtros.nivel || d["Nivel de estudios"] === filtros.nivel)
+  const hayFiltros = Object.values(filtros).some(v => v);
+
+  const filtrados = hayFiltros
+    ? datos.filter(d =>
+        (!filtros.ate || d["ATE"] === filtros.ate) &&
+        (!filtros.oficina || d["Oficina de empleo"] === filtros.oficina) &&
+        (!filtros.ayto || d["Ayuntamiento"] === filtros.ayto) &&
+        (!filtros.cod || d["Nº Ocupación"].toString().includes(filtros.cod)) &&
+        (!filtros.ocup || normalizar(d["Denominación Ocupación"]).includes(normalizar(filtros.ocup))) &&
+        (!filtros.nivel || d["Nivel de estudios"] === filtros.nivel)
+      )
+    : datos;
+
+  actualizarSelect(
+    selATE,
+    filtrados.map(d => d["ATE"]),
+    filtros.ate,
+    "Todas las ATE"
   );
 
-  actualizarSelect(selATE, filtrados.map(d => d["ATE"]), filtros.ate, "Todas las ATE");
-  actualizarSelect(selOfi, filtrados.map(d => d["Oficina de empleo"]), filtros.oficina, "Todas las oficinas");
-  actualizarSelect(selAyto, filtrados.map(d => d["Ayuntamiento"]), filtros.ayto, "Todos los ayuntamientos");
+  actualizarSelect(
+    selOfi,
+    filtrados.map(d => d["Oficina de empleo"]),
+    filtros.oficina,
+    "Todas las oficinas"
+  );
 
-  activarAutocomplete(inpCod, [...new Set(filtrados.map(d => d["Nº Ocupación"]))]);
-  activarAutocomplete(inpOcup, [...new Set(filtrados.map(d => d["Denominación Ocupación"]))]);
-  activarAutocomplete(inpNivel, [...new Set(filtrados.map(d => d["Nivel de estudios"]))]);
+  actualizarSelect(
+    selAyto,
+    filtrados.map(d => d["Ayuntamiento"]),
+    filtros.ayto,
+    "Todos los ayuntamientos"
+  );
+
+  activarAutocomplete(
+    inpCod,
+    [...new Set(filtrados.map(d => d["Nº Ocupación"]).filter(Boolean))]
+  );
+
+  activarAutocomplete(
+    inpOcup,
+    [...new Set(filtrados.map(d => d["Denominación Ocupación"]).filter(Boolean))]
+  );
+
+  activarAutocomplete(
+    inpNivel,
+    [...new Set(filtrados.map(d => d["Nivel de estudios"]).filter(Boolean))]
+  );
 
   mostrarResultados(filtrados);
 }
 
-function actualizarSelect(sel, valores, actual, texto) {
+function actualizarSelect(select, valores, actual, texto) {
   const unicos = [...new Set(valores.filter(Boolean))].sort();
-  sel.innerHTML = `<option value="">${texto}</option>`;
-  unicos.forEach(v => sel.add(new Option(v, v)));
-  if (unicos.includes(actual)) sel.value = actual;
+  select.innerHTML = `<option value="">${texto}</option>`;
+  unicos.forEach(v => select.add(new Option(v, v)));
+  if (unicos.includes(actual)) select.value = actual;
+}
+
+/* ===============================
+   LIMPIAR FILTROS
+================================*/
+document.getElementById("btnLimpiar")?.addEventListener("click", limpiarFiltros);
+
+function limpiarFiltros() {
+
+  selATE.value = "";
+  selOfi.value = "";
+  selAyto.value = "";
+
+  inpCod.value = "";
+  inpOcup.value = "";
+  inpNivel.value = "";
+
+  actualizarFiltros();
 }
 
 /* ===============================
    RESULTADOS
 ================================*/
 function mostrarResultados(lista) {
+
   const tbody = document.querySelector("#tablaResultados tbody");
   tbody.innerHTML = "";
 
@@ -177,57 +249,4 @@ function mostrarResultados(lista) {
     });
     tbody.appendChild(tr);
   });
-}
-
-/* ===============================
-   EXPORTAR A PDF
-================================*/
-document.getElementById("btnExportarPdf")?.addEventListener("click", exportarPDF);
-
-function exportarPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("landscape");
-
-  // Título
-  doc.setFontSize(14);
-  doc.text("Programa ACTIVA-T Joven – Resultados de búsqueda", 14, 15);
-
-  // Obtener filas visibles
-  const filas = [];
-  document.querySelectorAll("#tablaResultados tbody tr").forEach(tr => {
-    const fila = [];
-    tr.querySelectorAll("td").forEach(td => fila.push(td.textContent));
-    if (fila.length) filas.push(fila);
-  });
-
-  if (!filas.length) {
-    alert("No hay resultados para exportar");
-    return;
-  }
-
-  doc.autoTable({
-    startY: 22,
-    head: [[
-      "Ayuntamiento",
-      "Nº Ocupación",
-      "Denominación Ocupación",
-      "Nº Contratos",
-      "Grupo de Cotización",
-      "Nivel Estudios",
-      "Código Postal"
-    ]],
-    body: filas,
-    styles: {
-      fontSize: 8,
-      cellPadding: 3
-    },
-    headStyles: {
-      fillColor: [0, 121, 50]
-    },
-    alternateRowStyles: {
-      fillColor: [245, 245, 245]
-    }
-  });
-
-  doc.save("ACTIVA-T_Joven_resultados.pdf");
 }
