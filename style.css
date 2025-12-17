@@ -54,3 +54,32 @@ td {
   padding: 6px;
   border-bottom: 1px solid #ccc;
 }
+.campo-filtro {
+  position: relative;
+  display: inline-block;
+}
+
+.campo-filtro select,
+.campo-filtro input {
+  width: 300px;
+  padding-right: 28px;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-weight: bold;
+  display: none;
+}
+
+.clear-btn:hover {
+  color: #c00000;
+}
+
+.campo-filtro.activo .clear-btn {
+  display: block;
+}
