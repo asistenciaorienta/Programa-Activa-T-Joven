@@ -156,7 +156,7 @@ select, input { width: 300px; padding:6px; margin-top:5px; }
 /* Botón ✖ */
 .clear-btn {
   position: absolute;
-  right: 10px;
+  right: 15px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
