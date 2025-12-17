@@ -250,3 +250,28 @@ function mostrarResultados(lista) {
     tbody.appendChild(tr);
   });
 }
+/* ===============================
+   BOTONES ✖ LIMPIAR INDIVIDUAL
+================================*/
+document.querySelectorAll(".campo-filtro").forEach(campo => {
+
+  const input = campo.querySelector("input, select");
+  const clearBtn = campo.querySelector(".clear-btn");
+
+  if (!input || !clearBtn) return;
+
+  const toggleClear = () => {
+    campo.classList.toggle("activo", !!input.value);
+  };
+
+  input.addEventListener("input", toggleClear);
+  input.addEventListener("change", toggleClear);
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    toggleClear();
+    actualizarFiltros();
+  });
+
+  toggleClear();
+});
