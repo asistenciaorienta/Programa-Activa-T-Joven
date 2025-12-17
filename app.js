@@ -150,7 +150,7 @@ function actualizarFiltros() {
         (!filtros.ayto || d["Ayuntamiento"] === filtros.ayto) &&
         (!filtros.cod || d["Nº Ocupación"].toString().includes(filtros.cod)) &&
         (!filtros.ocup || normalizar(d["Denominación Ocupación"]).includes(normalizar(filtros.ocup))) &&
-        (!filtros.nivel || normalizar(d["Nivel de estudios"]) === normalizar(filtros.nivel))
+        (!filtros.nivel || normalizar(d["Nivel de estudios"]).includes(normalizar(filtros.nivel)))
       )
     : datos;
 
