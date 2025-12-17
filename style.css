@@ -171,10 +171,10 @@ select, input {padding:6px; margin-top:5px; }
 /* ===============================
    TAMAÑOS DE FILTROS (SAE)
 ================================*/
-.campo-filtro.ate { max-width: 160px; }
-.campo-filtro.codigo { max-width: 140px; }
-.campo-filtro.oficina,
-.campo-filtro.ayuntamiento {  max-width: 240px;}
+.campo-filtro.ate { max-width: 200px; }
+.campo-filtro.codigo { max-width: 170px; }
+.campo-filtro.oficina { max-width: 250px; }
+.campo-filtro.ayuntamiento {  max-width: 290px;}
 .campo-filtro.ocupacion,
 .campo-filtro.nivel {  max-width: 100%;}
 
