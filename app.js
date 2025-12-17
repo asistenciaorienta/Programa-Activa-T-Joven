@@ -142,7 +142,6 @@ function actualizarFiltros() {
   };
 
   const hayFiltros = Object.values(filtros).some(v => v);
-console.log("CLAVES DEL OBJETO:", Object.keys(datos[0]));
 
   const filtrados = hayFiltros
     ? datos.filter(d =>
@@ -152,12 +151,6 @@ console.log("CLAVES DEL OBJETO:", Object.keys(datos[0]));
         (!filtros.cod || d["Nº Ocupación"].toString().includes(filtros.cod)) &&
         (!filtros.ocup || normalizar(d["Denominación Ocupación"]).includes(normalizar(filtros.ocup))) &&
         (!filtros.nivel || normalizar(d["Nivel de estudios"]).includes(normalizar(filtros.nivel)))
-         if (filtros.nivel) {
-           console.log(
-             "Nivel escrito:", filtros.nivel,
-             "| Valor en fila:", d["Nivel de estudios"]
-           );
-         }
       )
     : datos;
 
