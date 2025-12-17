@@ -13,16 +13,19 @@ h4 {
 }
 
 .filter-box {
-  align-items: start;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  background: #fff;
-  padding: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 12px; /* menos espacio vertical */
+  background: #ffffff;
+  padding: 18px 20px;
   border: 2px solid #007932;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  align-items: start;
+  max-width: 980px;       /* 🔹 ancho controlado */
+  margin: 0 auto 25px;   /* 🔹 CENTRADO */
 }
+
 .filter-box label {
   color: #007932;
 }
@@ -66,21 +69,81 @@ select, input {padding:6px; margin-top:5px; }
  
 .filtro { position: relative; margin-bottom: 10px; }
 
-.campo-filtro {
-  position: relative;
-  width: 100%;
-  min-height: 48px;
-  align-self: start;
+.autocomplete {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 3000;
 }
 
-.campo-filtro select,
-.campo-filtro input {
-  width: 300px;
-  padding-right: 28px;
-  min-width: 0;
+.autocomplete div {
+  padding: 6px;
+  cursor: pointer;
 }
-.campo-filtro.activo .clear-btn {
-  display: block;
+.autocomplete div:hover {
+  background: #007932;
+  color: white;
+}
+
+#btnLimpiar {
+  background: #9e9e9e;
+}
+#btnLimpiar:hover {
+  background: #7d7d7d;
+}
+
+#btnExportarPdf {
+  background: #005a24;
+}
+#btnExportarPdf:hover {
+  background: #003d18;
+}
+/* ===============================
+   DISEÑO SAE – FILTROS ACTIVOS
+================================*/
+/* ===============================
+   CAMPO FILTRO – DEFINICIÓN ÚNICA
+================================ */
+
+.campo-filtro {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+}
+
+/* Inputs y selects */
+.campo-filtro input,
+.campo-filtro select {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 34px 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  transition: all .2s ease;
+  font-size: 14px;
+}
+
+/* Hover */
+.campo-filtro input:hover,
+.campo-filtro select:hover {
+  border-color: #007932;
+}
+
+/* Filtro ACTIVO */
+.campo-filtro.activo input,
+.campo-filtro.activo select {
+  border-color: #007932;
+  background: #eaf5ef;
+  box-shadow: 0 0 0 2px rgba(0,121,50,0.15);
+  font-weight: 600;
 }
 
 /* Botón ✖ */
@@ -99,96 +162,25 @@ select, input {padding:6px; margin-top:5px; }
   color: #c00000;
 }
 
-.autocomplete {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #ccc;
-  max-height: 180px;
-  overflow-y: auto;
-  z-index: 2000;
-}
-.autocomplete div {
-  padding: 6px;
-  cursor: pointer;
-}
-.autocomplete div:hover {
-  background: #007932;
-  color: white;
-}
-/* ===============================
-   DISEÑO SAE – FILTROS ACTIVOS
-================================*/
-
-.filter-box {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 12px;
-  background: #ffffff;
-  padding: 18px;
-  border: 2px solid #007932;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  grid-auto-rows: minmax(70px, auto);
-  margin-bottom: 25px;
-}
-
-/* Contenedor individual */
-.campo-filtro {
-  position: relative;
-}
-
-/* Inputs y selects base */
-.campo-filtro input,
-.campo-filtro select {
-  width: 100%;
-  padding: 8px 32px 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  transition: all .2s ease;
-  background: #fff;
-}
-
-/* Filtro ACTIVO */
-.campo-filtro.activo input,
-.campo-filtro.activo select {
-  border-color: #007932;
-  background: #eaf5ef;
-  box-shadow: 0 0 0 2px rgba(0,121,50,0.15);
-  font-weight: 600;
-}
-
-/* Hover elegante */
-.campo-filtro input:hover,
-.campo-filtro select:hover {
-  border-color: #007932;
-}
-
+/* Mostrar ✖ solo si activo */
 .campo-filtro.activo .clear-btn {
   display: block;
 }
 
-#btnLimpiar {
-  background: #9e9e9e;
-}
-#btnLimpiar:hover {
-  background: #7d7d7d;
-}
 
-#btnExportarPdf {
-  background: #005a24;
-}
-#btnExportarPdf:hover {
-  background: #003d18;
-}
 /* ===============================
    TAMAÑOS DE FILTROS (SAE)
 ================================*/
-.campo-filtro.ate { max-width: 180px; }
-.campo-filtro.codigo { max-width: 160px; }
+.campo-filtro.ate { max-width: 160px; }
+.campo-filtro.codigo { max-width: 140px; }
 .campo-filtro.oficina,
-.campo-filtro.ayuntamiento { max-width: 260px; }
+.campo-filtro.ayuntamiento {  max-width: 240px;}
 .campo-filtro.ocupacion,
-.campo-filtro.nivel { max-width: 100%; }
+.campo-filtro.nivel {  max-width: 100%;}
+
+.filter-box::before {
+  content: "Filtros de búsqueda";
+  font-weight: bold;
+  color: #007932;
+  grid-column: 1 / -1;
+}
