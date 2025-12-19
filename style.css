@@ -190,3 +190,26 @@ select, input {padding:6px; margin-top:5px; }
   color: #007932;
   grid-column: 1 / -1;
 }
+/* Contenedor con scroll */
+.tabla-wrapper {
+  max-height: 65vh;           /* altura visible */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: #fff;
+  max-height: calc(100vh - 350px);
+}
+
+/* Cabeceras fijas */
+#tablaResultados thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #007932;        /* mismo verde SAE */
+  color: white;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+}
+
+/* Evita solapamientos visuales */
+#tablaResultados {
+  border-collapse: collapse;
+}
