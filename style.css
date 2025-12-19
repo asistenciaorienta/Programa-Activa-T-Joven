@@ -25,7 +25,7 @@ h4 {
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   align-items: start;
-  max-width: 1180px;       /* 🔹 ancho controlado */
+  max-width: 980px;       /* 🔹 ancho controlado */
   margin: 0 auto 25px;   /* 🔹 CENTRADO */
 }
 
