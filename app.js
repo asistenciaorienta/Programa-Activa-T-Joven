@@ -203,11 +203,19 @@ function actualizarFiltros() {
 }
 
 function actualizarSelect(select, valores, actual, texto) {
-  const unicos = [...new Set(valores.filter(Boolean))].sort();
+
+  const unicos = [...new Set(valores.filter(Boolean))]
+    .sort((a, b) =>
+      a.localeCompare(b, "es", { sensitivity: "base" })
+    );
+
   select.innerHTML = `<option value="">${texto}</option>`;
+
   unicos.forEach(v => select.add(new Option(v, v)));
+
   if (unicos.includes(actual)) select.value = actual;
 }
+
 
 /* ===============================
    LIMPIAR FILTROS
